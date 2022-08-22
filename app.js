@@ -20,19 +20,20 @@ app.get("/", (req, res)=> {
 });
 //object with 3 properties and properties wiht array
 
-app.get("/animals", (req, res) => {
-   
-    const petType = Object.values(pets);
-    console.log(petType);
+// for (const [index, animal] of pets[petType].entries()) {
+//     console.log(animal.name, "has index:", index);
 
-    let petsList = "";
-    petType.forEach(pet => {
-        console.log(pet);
-        petsList+=`<li>${Object.values(pet)}</li>`
-    });
-    res.send(`<ul>${petsList}</ul>`);
-  
-})
+app.get("/animals", (req, res) => {
+    const allPets = Object.keys(pets);
+    let allNames = "";
+    allPets.forEach((name) =>
+      pets[name].forEach(
+        (pet, index) =>
+          (allNames += `<a href=/animals/${name}/${index}><li>${pet.name}</li></a>`)
+      )
+    );
+    res.send(allNames);
+  });
 
 app.get("/animals/:pet_type", (req, res) => {
     const { pet_type } = req.params;
@@ -40,10 +41,11 @@ app.get("/animals/:pet_type", (req, res) => {
    //loop over the pets[pet_type] and add a li with the name of the animals as text and add this to the html 
     // let postList+=`<li>pet.name</li>`
     // const petType = pets[pet_type];
+
     let petsList = "";
 
-    pets[pet_type].forEach(pet => {
-        petsList+=`<li><a href="/animals/${pet_type}/${pets[pet_type].indexOf(pet)}">${pet.name}</a></li>`
+    pets[pet_type].forEach((pet, index) => {
+        petsList+=`<li><a href="/animals/${pet_type}/${index}">${pet.name}</a></li>`
     });
     res.send(`<ul>${petsList}</ul>`);
    
@@ -53,7 +55,14 @@ app.get("/animals/:pet_type/:pet_id", (req, res) => {
     const { pet_id, pet_type} = req.params;
     const petType = pets[pet_type];
     // res.send(petType[pet_id].name);
-    res.send(`<h1>${petType[pet_id].name}</h1>`)
+    res.send(`<h1>${petType[pet_id].name}</h1>
+    <img src=${petType[pet_id].url}>
+    <p>${petType[pet_id].description}</p>
+    <ul>
+        <li>${petType[pet_id].breed}</li>
+        <li>${petType[pet_id].age}</li>
+    </ul>
+    `)
     
 })
 
