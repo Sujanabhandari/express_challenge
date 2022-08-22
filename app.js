@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const path = require('path');
 const pets = require('./helper.js');
 
 const port = process.env.PORT || 3000;
@@ -34,8 +33,21 @@ app.get("/animals/:pet_type", (req, res) => {
 
 app.get("/animals/:pet_type/:pet_id", (req, res) => {
     const { pet_id, pet_type} = req.params;
-    const petType = pets[pet_type];
-    res.send(`<h1>${petType[pet_id].name}</h1>`);
+    // const petType = pets[pet_type];
+    // res.send(`<h1>${petType[pet_id].name}</h1>`);
+    // const t = req.params.pet_type;
+    // const i = req.params.pet_id;
+    const pet = pets[pet_type][pet_id];
+    
+    let html = `${pet.name}'s page!
+    <img src="${pet.url}" alt=${pet.name} />
+    <p> ${pet.description}</p>
+    <ul>
+    <li>${pet.breed}</li>
+    <li>${pet.age}</li>
+    </ul>`;
+
+    res.send(html);
 
 })
 
